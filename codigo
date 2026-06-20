@@ -1,1 +1,47 @@
+#!/bin/bash
 
+# taller 2 - Hadware y Sistemas Operativos
+# -Ariel Fuenzalida
+# -Henry Huerta
+# -Diego Binimelis
+
+# -INF2322-2
+
+PS3 = "Seleccione una opcion: "
+
+opciones = ("Listar procesos" "Eliminar proceso" "listar detenidos" "activar servicio" "salir")
+
+pausa(){
+  echo
+  read -p "para continuar ENTER"
+}
+
+
+select opc in  "${opciones[@]}"
+do
+  case $opc in
+
+    "listar procesos")
+      echo
+      read -p "ingresa tu nombre: " usuario
+
+      > /tmp/procesos.txt
+      contador = 1
+
+
+    "Eliminar proceso")
+      echo
+
+      
+
+    "listar detenidos")
+      echo
+
+
+
+    "activar servicio"
+      echo
+
+
+    "salir")
+      echo
