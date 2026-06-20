@@ -7,9 +7,10 @@
 
 # -INF2322-2
 
-PS3 = "Seleccione una opcion: "
 
 main(){
+
+  PS3 = "Seleccion una opcion: "
 
   opciones = ("Listar procesos" "Eliminar proceso" "listar detenidos" "activar servicio" "salir")
 
