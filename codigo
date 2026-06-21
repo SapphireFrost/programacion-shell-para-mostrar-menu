@@ -7,6 +7,15 @@
 
 # -INF2322-2
 
+Listar_procesos(){
+  echo
+  read -p "ingresa tu nombre: " usuario
+
+  > /tmp/procesos.txt
+  contador = 1
+
+}
+
 
 main(){
 
