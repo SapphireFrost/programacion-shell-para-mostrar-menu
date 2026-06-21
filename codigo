@@ -9,11 +9,24 @@
 
 Listar_procesos(){
   echo
-  read -p "ingresa tu nombre: " usuario
+  read -p "Ingresa el nombre del usuario o '*': " usuario
 
   > /tmp/procesos.txt
-  contador = 1
+  contador=1
 
+  if [ "$usuario" = "*"]; then
+    ps -eo pid,cmd --no-headers | while read -r linea; do
+      echo "$contador) $linea" >> /tmp/procesos.txt
+      contador=$((contador + 1))
+    done
+  else
+    ps -u "$usuario" -o pid,cmd --no-headers | while read -r linea; do
+      echo "$contador) $linea" >> /tmp/procesos.txt
+      contador=((contador + 1))
+    done
+  fi
+
+  less /tmp/procesos.txt
 }
 
 
