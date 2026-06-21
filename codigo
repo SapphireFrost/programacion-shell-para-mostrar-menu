@@ -9,11 +9,108 @@
 
 Listar_procesos(){
   echo
-  read -p "ingresa tu nombre: " usuario
-
+  read -p "Ingresa el nombre del usuario o '*': " usuario
   > /tmp/procesos.txt
-  contador = 1
+  contador=1
 
+  if [ "$usuario" = "*"]; then
+    ps -eo pid,cmd --no-headers | while read -r linea; do
+      echo "$contador) $linea" >> /tmp/procesos.txt
+      contador=$((contador + 1))
+    done
+  else
+    ps -u "$usuario" -o pid,cmd --no-headers | while read -r linea; do
+      echo "$contador) $linea" >> /tmp/procesos.txt
+      contador=((contador + 1))
+    done
+  fi
+
+  if [ -s /tmp/procesos.txt ]; then
+    less /tmp/procesos.txt
+  else
+    echo "No se encontraron procesos."
+  fi
+}
+
+Eliminar_proceso(){
+  echo
+
+  if[! -f /tmp/procesos.txt] || [ ! -s /tmp/procesos.txt ]; then
+    echo "Debes listar los procesos primero(Opcion 1)."
+    return
+  fi
+
+  read -p "Ingresa el numero secuencial del proceso a matar: " numero
+
+  pid_a_matar=""
+
+  while read -r col_numero col_pid resto_linea; do
+    if[ "$col_numero" == "$numero)" ]; then
+      pid_a_matar="$col_pid"
+      break
+    fi
+  done < /tmp/procesos.txt
+
+  if [ "$pid_a_matar" != ""] ; then
+    echo "Intentando finalizar el proceso PID: $pid_a_matar..."
+    kill -9 "$pid_a_matar" 2>/dev/null
+
+    if [$? -eq 0 ]; then
+      echo "Proceso finalizado con exito."
+    else
+      echo "No  se pudo matar el proceso"
+    fi
+  else
+    echo "Numero secuencial no encontrado en la lista."
+  fi
+}
+
+Listar_detenidos(){
+  echo
+  echo "Buscando servicios inactivos en el sistema..."
+  > /tmp/servicios.txt
+  contador=1
+
+  systemctl list-units --type=service --all --state=inactive,failed --no-legend | while read -r svc load active sub description; do
+    echo "$contador) $svc $descripcion" >> /tmp/servicios.txt
+    contador=((contador +1))
+  done
+
+  if [ -s /tmp/servicios.txt ]; then
+    less /tmp/servicios.txt
+  else
+    echo "No se encontrador servicios inactivos."
+  fi
+}
+
+Activar_servicio(){
+  echo
+  if [ ! -f /tmp/servicios.txt ] || [ ! -s /tmp/servicios.txt ]; then
+    echo "Primero debes listar los servicios"
+    return
+  fi
+
+  read -p "Ingresa el numero secuencial del servicio a activar: " numero
+  svc_a_activar=""
+
+  while read -r col_numero col_svc resto_linea; do
+    if [ "$col_numero" == "$numero)" ]; then
+      svc_a_activar="$col_svc"
+      break
+    fi
+  done < /tmp/servicios.txt
+
+  if [ "$svcv_a_activar" != "" ]; then
+    echo "Iniciando el servicio: $svc_a_activar..."
+    systemctl start "$svc_a_activar" 2>dev/null
+    if [ $? -eq 0 ]; then
+      echo "Servicio iniciado con exito."
+    else
+      echo "No se pudo iniciar el servicio"
+    fi
+  else
+    echo "Numero secuencial no encontrado"
+  fi
 }
 
 
